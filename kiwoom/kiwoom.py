@@ -55,7 +55,7 @@ class Kiwoom:
         # 이벤트에 콜백함수(들)을 등록
         self.set_event_slots()
 
-        # 이벤트 루프 모음
+        # 로그인을 위한 이벤트 루프
         self.login_event_loop = QEventLoop()
 
         # 키움증권에 로그인
@@ -179,6 +179,19 @@ class Kiwoom:
         return data.strip()
 
     def OnReceiveTrData(self, screen, rqname, trcode, record, next):
+        """
+        키움 API에서 응답받은 TrData 처리
+
+        Args:
+            screen:
+            rqname:
+            trcode:
+            record:
+            next:
+
+        Returns:
+
+        """
         print(screen, rqname, trcode, record, next)
         per = self.GetCommData(trcode, rqname, 0, "PER")
         pbr = self.GetCommData(trcode, rqname, 0, "PBR")
