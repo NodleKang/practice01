@@ -180,7 +180,7 @@ class Kiwoom:
 
     def OnReceiveTrData(self, screen, rqname, trcode, record, next):
         """
-        키움 API에서 응답받은 TrData 처리
+        키움 API에서 응답받은 TR 처리
 
         Args:
             screen:
