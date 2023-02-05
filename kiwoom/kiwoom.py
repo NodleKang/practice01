@@ -63,15 +63,16 @@ class Kiwoom:
         # 키움증권 로그인 후에 계좌번호 목록가져오기
         self.accno_list = self.get_accno_list()
         # 단일 계좌에 상세 정보 조회
-        self.get_account_detail(self.accno_list[0])
+        for accno in self.accno_list:
+            self.get_account_detail(accno)
 
         print(__name__, "started")
 
     def set_event_slots(self):
         """
-        이벤트에 콜백함수(들)을 등록하는 함수.
+        이벤트에 콜백함수(들)을 등록한다.
         PyQt에 의존해서 돌아가는 부분으로 이벤트가 언제 발생할지는 모르지만 
-        이벤트가 발생하면 self에 가지고 있는 대응되는 함수 실행
+        이벤트가 발생하면 self에 가지고 있는 대응되는 함수를 실행한다.
         """
         # 이벤트 - 로그인 처리
         self.ocx.OnEventConnect.connect(self.OnEventConnect)
@@ -127,7 +128,7 @@ class Kiwoom:
         Returns:
 
         """
-        print("예수금상세현황")
+        print("예수금상세현황요청")
         tr_code = "opw00001"  # 조회할 TR 이름
         screen_no = "2000"  # 화면번호
 
@@ -155,9 +156,9 @@ class Kiwoom:
 
         print(errors(err_code=err_code))
         print("login is done")
-        code = "005930"
-        name = self.GetMasterCodeName(code)
-        print(code, name)
+        # code = "005930"
+        # name = self.GetMasterCodeName(code)
+        # print(code, name)
 
     def GetMasterCodeName(self, code):
         """
@@ -172,27 +173,33 @@ class Kiwoom:
         name = self.ocx.dynamicCall("GetMasterCodeName(QString)", code)
         return name
 
-    def GetCommData(self, trcode, rqname, index, item):
+    def GetCommData(self, strTrCode, strRecordName, nIndex, strItemName):
         data = self.ocx.dynamicCall(
-            "GetCommData(QString, Qstring, int, QString)", trcode, rqname, index, item
+            "GetCommData(QString, QString, int, QString)",
+            strTrCode,
+            strRecordName,
+            nIndex,
+            strItemName,
         )
         return data.strip()
 
-    def OnReceiveTrData(self, screen, rqname, trcode, record, next):
+    def OnReceiveTrData(self, sScrNo, sRQName, sTrCode, sRecordName, sPrevNext):
         """
-        키움 API에서 응답받은 TrData 처리
+        키움서버에서 응답받은 OnReceiveTrData() 이벤트 처리
 
         Args:
-            screen:
-            rqname:
-            trcode:
-            record:
-            next:
+            sScrNo: 화면번호
+            sRQName: 사용자 구분명
+            sTrCode: TR이름
+            sRecordName: 레코드 이름
+            sPrevNext: 연속조회 유무를 판단하는 값 0: 연속(추가조회) 데이터 없음, 2: 연속(추가조회) 데이터 있음
 
         Returns:
 
         """
-        print(screen, rqname, trcode, record, next)
-        per = self.GetCommData(trcode, rqname, 0, "PER")
-        pbr = self.GetCommData(trcode, rqname, 0, "PBR")
-        print(per, pbr)
+
+        if sRQName == "예수금상세현황요청":
+            deposit = self.GetCommData(sTrCode, sRecordName, 0, "예수금")
+            print("예수금 %s" % deposit)
+            d2 = self.GetCommData(sTrCode, sRecordName, 0, "출금가능금액")
+            print("출금가능금액 %s" % d2)
