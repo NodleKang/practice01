@@ -129,8 +129,8 @@ class Kiwoom:
 
         """
         print("예수금상세현황요청")
-        tr_code = "opw00001"  # 조회할 TR 이름
-        screen_no = "2000"  # 화면번호
+        sTrCode = "opw00001"  # 조회할 TR 이름
+        sScreenNo = "2000"  # 화면번호
 
         self.ocx.dynamicCall("SetInputValue(String, String)", "계좌번호", accno)
         self.ocx.dynamicCall("SetInputValue(String, String)", "비밀번호", "0000")
@@ -139,9 +139,9 @@ class Kiwoom:
         self.ocx.dynamicCall(
             "CommRqData(String, String, int, String)",
             "예수금상세현황요청",
-            tr_code,
+            sTrCode,
             "0",
-            screen_no,
+            sScreenNo,
         )
 
     def OnEventConnect(self, err_code):
