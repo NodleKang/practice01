@@ -131,6 +131,7 @@ class Kiwoom:
         print("예수금상세현황요청")
         sTrCode = "opw00001"  # 조회할 TR 이름
         sScreenNo = "2000"  # 화면번호
+        print("계좌번호 %s" % accno)
 
         self.ocx.dynamicCall("SetInputValue(String, String)", "계좌번호", accno)
         self.ocx.dynamicCall("SetInputValue(String, String)", "비밀번호", "0000")
